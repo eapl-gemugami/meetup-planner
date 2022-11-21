@@ -24,17 +24,17 @@ func GetDataRange(w http.ResponseWriter, r *http.Request) {
 		timeEnd := time.Date(2022, 11, 19, 21, 0, 0, 0, loc)
 
 		/*
-		// https://gosamples.dev/difference-between-dates/
-		difference := date2.Sub(date1)
+			// https://gosamples.dev/difference-between-dates/
+			difference := date2.Sub(date1)
 
-		fmt.Printf("Weeks: %d\n", int64(difference.Hours()/24/7))
-		fmt.Printf("Days: %d\n", int64(difference.Hours()/24))
-		fmt.Printf("Hours: %.f\n", difference.Hours())
-		fmt.Printf("Minutes: %.f\n", difference.Minutes())
+			fmt.Printf("Weeks: %d\n", int64(difference.Hours()/24/7))
+			fmt.Printf("Days: %d\n", int64(difference.Hours()/24))
+			fmt.Printf("Hours: %.f\n", difference.Hours())
+			fmt.Printf("Minutes: %.f\n", difference.Minutes())
 		*/
 
 		currentDate := time.UnixMilli(timeStart.UnixMilli())
-		if (timeEnd.After(timeStart)) {
+		if timeEnd.After(timeStart) {
 			incrementMins := 60
 
 			currentIdx := 0

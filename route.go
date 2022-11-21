@@ -13,19 +13,21 @@ func init() {
 	r := chi.NewRouter()
 
 	r.Get("/", views.Home)
-	r.Get("/contact", views.Contact)
 	r.Get("/time", views.Time)
-	r.Get("/e/{event_id}", views.GetDataRange) // Event
+
+	r.Get("/create", views.CreateEvent)
+	r.Get("/e/{event_id}", views.GetDataRange) // e = Event
+
 	/*
-		r.Get("/api/widgets", apiGetWidgets)
-		r.Post("/api/widgets", apiCreateWidget)
-		r.Post("/api/widgets/{slug}", apiUpdateWidget)
-		r.Post("/api/widgets/{slug}/parts", apiCreateWidgetPart)
-		r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/update", apiUpdateWidgetPart)
-		r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/delete", apiDeleteWidgetPart)
-		r.Get("/{slug}", widgetGet)
-		r.Get("/{slug}/admin", widgetAdmin)
-		r.Post("/{slug}/image", widgetImage)
+	r.Get("/api/widgets", apiGetWidgets)
+	r.Post("/api/widgets", apiCreateWidget)
+	r.Post("/api/widgets/{slug}", apiUpdateWidget)
+	r.Post("/api/widgets/{slug}/parts", apiCreateWidgetPart)
+	r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/update", apiUpdateWidgetPart)
+	r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/delete", apiDeleteWidgetPart)
+	r.Get("/{slug}", widgetGet)
+	r.Get("/{slug}/admin", widgetAdmin)
+	r.Post("/{slug}/image", widgetImage)
 	*/
 
 	// Serve statics
