@@ -14,6 +14,7 @@ func init() {
 
 	r.Get("/", views.Home)
 	r.Get("/contact", views.Contact)
+	r.Get("/time", views.Time)
 	r.Get("/e/{event_id}", views.GetDataRange) // Event
 	/*
 		r.Get("/api/widgets", apiGetWidgets)
