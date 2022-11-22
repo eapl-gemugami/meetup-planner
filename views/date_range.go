@@ -1,10 +1,12 @@
 package views
 
 import (
-	"errors"
 	"fmt"
-	"net/http"
+	"log"
 	"time"
+	"errors"
+	"net/http"
+	"html/template"
 
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
@@ -37,7 +39,8 @@ func GetDataRange(w http.ResponseWriter, r *http.Request) {
 	err = conn.First(&event, "public_code = ?", public_code).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		fmt.Fprintf(w, "Event not found")
+		//fmt.Fprintf(w, "Event not found")
+		panic("Event not found")
 		return
 	}
 
@@ -51,10 +54,10 @@ func GetDataRange(w http.ResponseWriter, r *http.Request) {
 	difference := timeEnd.Sub(timeStart)
 	fmt.Printf("Weeks: %d\n", int64(difference.Hours()/24/7))
 
-	newLocationName := "Australia/Brisbane"
-	newLoc, _ := time.LoadLocation(newLocationName)
+	//newLocationName := "Australia/Brisbane"
+	//newLoc, _ := time.LoadLocation(newLocationName)
 
-	fmt.Fprintf(w, "Times in %s\n", newLocationName)
+	//fmt.Fprintf(w, "Times in %s\n", newLocationName)
 
 	currentDate := time.UnixMilli(timeStart.UnixMilli())
 	if timeEnd.After(timeStart) {
@@ -65,10 +68,12 @@ func GetDataRange(w http.ResponseWriter, r *http.Request) {
 		for currentTimeIsBeforetimeEnd {
 			// https://pkg.go.dev/fmt#hdr-Printing
 			//fmt.Fprintf(w, "%v - %s\n", currentIdx, currentDate.UTC())
+			/*
 			fmt.Fprintf(w, "%v - %s\n",
 				currentIdx,
 				currentDate.In(newLoc).Format("02/Jan/2006 - Monday @ 15:04 / 3:04pm"),
 			)
+			*/
 
 			currentDate = currentDate.Add(time.Minute * time.Duration(incrementMins))
 			currentTimeIsBeforetimeEnd = currentDate.Before(timeEnd)
@@ -76,12 +81,32 @@ func GetDataRange(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// And add the time end
+		/*
 		fmt.Fprintf(w, "%v - %s\n",
 			currentIdx,
 			timeEnd.In(newLoc).Format("02/Jan/2006 - Monday @ 15:04 / 3:04pm"),
 		)
+		*/
 	} else {
-		fmt.Println("ERROR - timeEnd MUST be after timeStart")
+		//fmt.Println("ERROR - timeEnd MUST be after timeStart")
+	}
+
+	tmpl_files := []string{
+		"templates/base.tmpl.html",
+		"templates/time_poll.tmpl.html",
+	}
+
+	ts, err := template.ParseFS(content, tmpl_files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", &event)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", 500)
 	}
 }
 
