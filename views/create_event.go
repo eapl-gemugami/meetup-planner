@@ -2,13 +2,15 @@ package views
 
 import (
 	"fmt"
+	"log"
 	"time"
+	"strings"
+	"strconv"
 	"net/http"
-  "math/rand"
+	"math/rand"
+	"html/template"
 
-	"gorm.io/gorm"
-	"gorm.io/driver/sqlite"
-
+	"github.com/eapl-gemugami/meetup-planner/db"
 	"github.com/eapl-gemugami/meetup-planner/models"
 )
 
@@ -22,21 +24,100 @@ func randSeq(n int) string {
 	return string(b)
 }
 
-func CreateEvent(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
-  if err != nil {
-    panic("Failed to connect database")
-  }
+func CreateEventGet(w http.ResponseWriter, r *http.Request) {
+// Initialize a slice containing the paths to the two files. It's important
+	// to note that the file containing our base template must be the *first*
+	// file in the slice.
+	files := []string{
+		"./templates/base.tmpl.html",
+		"./templates/create_event.tmpl.html",
+	}
 
-  // Migrate the schema
-  db.AutoMigrate(&models.Event{})
+	// Use the template.ParseFiles() function to read the files and store the
+	// templates in a template set. Notice that we can pass the slice of file
+	// paths as a variadic parameter?
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
 
-	// Create random name
+	// Use the ExecuteTemplate() method to write the content of the "base"
+	// template as the response body.
+	err = ts.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+	}
+}
+
+func CreateEventPost(w http.ResponseWriter, r *http.Request) {
+	conn, err := db.GetDBConnection()
+	if err != nil {
+		panic("Failed to connect database")
+	}
+
+	// Call ParseForm() to parse the raw query and update r.PostForm and r.Form.
+	if err := r.ParseForm(); err != nil {
+		// Redirect to Error
+		fmt.Printf("ParseForm() err: %v", err)
+		return
+	}
+
+	//fmt.Printf("r.PostFrom = %v\n", r.PostForm)
+
+	loc, err := time.LoadLocation(r.FormValue("tz"))
+	if err != nil {
+		panic("Invalid timezone")
+	}
+
+	// Try to parse the date
+	start_date_split := strings.Split(r.FormValue("start_date"), "-")
+	if len(start_date_split) != 3 {
+		panic("Incorrect date format")
+	}
+
+	start_year, _ := strconv.Atoi(start_date_split[0])
+	start_month, _ := strconv.Atoi(start_date_split[1])
+	start_day, _ := strconv.Atoi(start_date_split[2])
+	start_hour, _ := strconv.Atoi(r.FormValue("start_time"))
+
+	timeStart := time.Date(start_year, time.Month(start_month), start_day, start_hour, 0, 0, 0, loc)
+	fmt.Printf("Start time: %v\n", timeStart)
+
+	end_date_split := strings.Split(r.FormValue("end_date"), "-")
+	if len(end_date_split) != 3 {
+		panic("Incorrect date format")
+	}
+
+	end_year, _ := strconv.Atoi(end_date_split[0])
+	end_month, _ := strconv.Atoi(end_date_split[1])
+	end_day, _ := strconv.Atoi(end_date_split[2])
+	end_hour, _ := strconv.Atoi(r.FormValue("end_time"))
+
+	timeEnd := time.Date(end_year, time.Month(end_month), end_day, end_hour, 0, 0, 0, loc)
+	fmt.Printf("end time: %v\n", timeEnd)
+
+	time_interval, _ := strconv.Atoi(r.FormValue("interval"))
+
+	// Create random codes
 	rand.Seed(time.Now().UnixNano())
-	eventName := randSeq(10)
+	publicCode := randSeq(15)
+	adminCode := randSeq(35)
 
-  // Create event
-  db.Create(&models.Event{Name: eventName, TimeStart: time.Now().Unix()})
+	// Create event
+	conn.Create(&models.Event{
+		Name: strings.TrimSpace(r.FormValue("event_name")),
 
-	fmt.Fprintf(w, "Create event: %v\n", eventName)
+		PublicCode: publicCode,
+		AdminCode: adminCode,
+
+		TimeStart: timeStart.Unix(),
+		TimeEnd: timeEnd.Unix(),
+		TimeInterval: time_interval,
+	})
+
+	fmt.Printf("Create event: %v, %v\n", publicCode, adminCode)
+	http.Redirect(w, r, "/create_success", http.StatusSeeOther)
 }

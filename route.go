@@ -14,9 +14,13 @@ func init() {
 
 	r.Get("/", views.Home)
 	r.Get("/time", views.Time)
+	r.Get("/migrate", views.Migrate)
 
-	r.Get("/create", views.CreateEvent)
-	r.Get("/e/{event_id}", views.GetDataRange) // e = Event
+	r.Get("/create", views.CreateEventGet)
+	r.Post("/create", views.CreateEventPost)
+	r.Get("/create_success", views.CreateEventGet)
+
+	r.Get("/e/{public_code}", views.GetDataRange) // e = Event
 
 	/*
 	r.Get("/api/widgets", apiGetWidgets)

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"time"
 	"gorm.io/gorm"
 )
 
@@ -11,6 +10,11 @@ import (
 type Event struct {
 	gorm.Model
 	Name string
+
+	PublicCode string `gorm:"unique"`
+	AdminCode string `gorm:"unique"`
+
 	TimeStart int64 // Unix Timestamp
 	TimeEnd int64 // Unix Timestamp
+	TimeInterval int
 }
