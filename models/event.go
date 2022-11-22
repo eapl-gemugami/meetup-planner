@@ -12,9 +12,9 @@ type Event struct {
 	Name string
 
 	PublicCode string `gorm:"unique"`
-	AdminCode string `gorm:"unique"`
+	AdminCode  string `gorm:"unique"`
 
-	TimeStart int64 // Unix Timestamp
-	TimeEnd int64 // Unix Timestamp
+	TimeStart    int64 // Unix Timestamp
+	TimeEnd      int64 // Unix Timestamp
 	TimeInterval int
 }

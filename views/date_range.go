@@ -1,13 +1,13 @@
 package views
 
 import (
-	"fmt"
-	"time"
 	"errors"
+	"fmt"
 	"net/http"
+	"time"
 
-	"gorm.io/gorm"
 	"github.com/go-chi/chi"
+	"gorm.io/gorm"
 
 	"github.com/eapl-gemugami/meetup-planner/db"
 	"github.com/eapl-gemugami/meetup-planner/models"
@@ -34,7 +34,7 @@ func GetDataRange(w http.ResponseWriter, r *http.Request) {
 	public_code := chi.URLParam(r, "public_code")
 
 	var event models.Event
-	err = conn.First(&event, "public_code = ?", public_code).Error // find product with code D42
+	err = conn.First(&event, "public_code = ?", public_code).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		fmt.Fprintf(w, "Event not found")
@@ -49,7 +49,7 @@ func GetDataRange(w http.ResponseWriter, r *http.Request) {
 	// TODO: Check that the difference is less than a week
 	// https://gosamples.dev/difference-between-dates/
 	difference := timeEnd.Sub(timeStart)
-	fmt.Printf("Weeks: %d\n", int64(difference.Hours() / 24 / 7))
+	fmt.Printf("Weeks: %d\n", int64(difference.Hours()/24/7))
 
 	newLocationName := "Australia/Brisbane"
 	newLoc, _ := time.LoadLocation(newLocationName)

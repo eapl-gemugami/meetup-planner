@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"time"
-	"strings"
 	"strconv"
+	"strings"
 	"net/http"
 	"math/rand"
 	"html/template"
@@ -14,7 +14,9 @@ import (
 	"github.com/eapl-gemugami/meetup-planner/models"
 )
 
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+// From Microsoft Product Activation
+//var letters = []rune("2346789BCDFGHJKMPQRTVWXY")
 
 func randSeq(n int) string {
 	b := make([]rune, n)
@@ -25,18 +27,18 @@ func randSeq(n int) string {
 }
 
 func CreateEventGet(w http.ResponseWriter, r *http.Request) {
-// Initialize a slice containing the paths to the two files. It's important
+	// Initialize a slice containing the paths to the two files. It's important
 	// to note that the file containing our base template must be the *first*
 	// file in the slice.
 	files := []string{
-		"./templates/base.tmpl.html",
-		"./templates/create_event.tmpl.html",
+		"templates/base.tmpl.html",
+		"templates/create_event.tmpl.html",
 	}
 
 	// Use the template.ParseFiles() function to read the files and store the
 	// templates in a template set. Notice that we can pass the slice of file
 	// paths as a variadic parameter?
-	ts, err := template.ParseFiles(files...)
+	ts, err := template.ParseFS(content, files...)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
@@ -111,13 +113,14 @@ func CreateEventPost(w http.ResponseWriter, r *http.Request) {
 		Name: strings.TrimSpace(r.FormValue("event_name")),
 
 		PublicCode: publicCode,
-		AdminCode: adminCode,
+		AdminCode:  adminCode,
 
-		TimeStart: timeStart.Unix(),
-		TimeEnd: timeEnd.Unix(),
+		TimeStart:    timeStart.Unix(),
+		TimeEnd:      timeEnd.Unix(),
 		TimeInterval: time_interval,
 	})
 
 	fmt.Printf("Create event: %v, %v\n", publicCode, adminCode)
-	http.Redirect(w, r, "/create_success", http.StatusSeeOther)
+	// https://pkg.go.dev/net/http#pkg-constants
+	http.Redirect(w, r, "/a/" + adminCode, http.StatusSeeOther)
 }

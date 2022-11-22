@@ -1,8 +1,8 @@
 package db
 
 import (
-	"gorm.io/gorm"
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func GetDBConnection() (*gorm.DB, error) {

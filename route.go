@@ -12,26 +12,28 @@ var Serve http.Handler
 func init() {
 	r := chi.NewRouter()
 
+	// Debug Routes
 	r.Get("/", views.Home)
 	r.Get("/time", views.Time)
 	r.Get("/migrate", views.Migrate)
 
-	r.Get("/create", views.CreateEventGet)
-	r.Post("/create", views.CreateEventPost)
-	r.Get("/create_success", views.CreateEventGet)
+	// Event routes
+	r.Get("/create_event", views.CreateEventGet)
+	r.Post("/create_event", views.CreateEventPost)
 
 	r.Get("/e/{public_code}", views.GetDataRange) // e = Event
+	r.Get("/a/{admin_code}", views.GetAdmin)  // a = Admin
 
 	/*
-	r.Get("/api/widgets", apiGetWidgets)
-	r.Post("/api/widgets", apiCreateWidget)
-	r.Post("/api/widgets/{slug}", apiUpdateWidget)
-	r.Post("/api/widgets/{slug}/parts", apiCreateWidgetPart)
-	r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/update", apiUpdateWidgetPart)
-	r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/delete", apiDeleteWidgetPart)
-	r.Get("/{slug}", widgetGet)
-	r.Get("/{slug}/admin", widgetAdmin)
-	r.Post("/{slug}/image", widgetImage)
+		r.Get("/api/widgets", apiGetWidgets)
+		r.Post("/api/widgets", apiCreateWidget)
+		r.Post("/api/widgets/{slug}", apiUpdateWidget)
+		r.Post("/api/widgets/{slug}/parts", apiCreateWidgetPart)
+		r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/update", apiUpdateWidgetPart)
+		r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/delete", apiDeleteWidgetPart)
+		r.Get("/{slug}", widgetGet)
+		r.Get("/{slug}/admin", widgetAdmin)
+		r.Post("/{slug}/image", widgetImage)
 	*/
 
 	// Serve statics
