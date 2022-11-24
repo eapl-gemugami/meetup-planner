@@ -30,8 +30,6 @@ func GetAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//fmt.Fprintf(w, "Event %v found", admin_code)
-
 	tmpl_files := []string{
 		"templates/base.tmpl.html",
 		"templates/admin.tmpl.html",

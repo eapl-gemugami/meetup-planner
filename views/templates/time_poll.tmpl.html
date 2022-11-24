@@ -1,25 +1,34 @@
-{{define "title"}}Time poll for the event [EVENT_ID]{{end}}
+{{define "title"}}Time poll for the event {{.Event.Name}}{{end}}
 
 {{define "main"}}
 <br>
 <div class="panel panel-default">
 	<div class="panel-heading">
-		<h3 class="panel-title">Create event</h3>
+		<h3 class="panel-title">Event: {{.Event.Name}}</h3>
 	</div>
 	<div class="panel-body">
-		<form role="form" target="/create" method="post">
+		<form role="form" action="/e/{{.Event.PublicCode}}/{{.TimezoneEscaped}}" method="post">
 			<fieldset>
 				<div class="form-group">
-					<h3 class="panel-title">Option 0</h3>
-				</div>
-				<div class="form-group">
-					<select name="option[0]" id="option[0]" class="form-control">
-						<option value="0" select>⛔ - Not available</option>
-						<option value="1" select>✅ - Available</option>
-						<option value="2" select>👌 - Prefered</option>
-					</select>
+					<input class="form-control" placeholder="Your name" name="username" id="username" type="text" autofocus>
 				</div>
 				<hr>
+				<div class="form-group">
+					<h2 class="panel-title"><strong>Select your prefered times for this event</strong></h2>
+					<h3 class="panel-title">Times in timezone: {{.Timezone}}</h3>
+				</div>
+{{range $index, $element := .TimeOptions}}
+				<div class="form-group">
+					<div class="input-group">
+						<span class="input-group-addon" id="basic-addon1">{{ $element }}</span>
+						<select name="option[{{ $index }}]" id="option[{{ $index }}]" class="form-control">
+							<option value="0" select>⛔ - Not available</option>
+							<option value="1" select>✅ - Available</option>
+							<option value="2" select>👌 - Prefered</option>
+						</select>
+					</div>
+				</div>
+{{end}}
 				<input class="btn btn-lg btn-success btn-block" type="submit" value="Create event">
 			</fieldset>
 		</form>

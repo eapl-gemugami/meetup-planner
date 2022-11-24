@@ -12,29 +12,26 @@ var Serve http.Handler
 func init() {
 	r := chi.NewRouter()
 
-	// Debug Routes
 	r.Get("/", views.Home)
-	r.Get("/time", views.Time)
-	r.Get("/migrate", views.Migrate)
+
+	// Debug Routes
+	r.Get("/debug/time", views.Time)
+
+	// Admin
+	r.Get("/admin/migrate", views.Migrate)
 
 	// Event routes
 	r.Get("/create_event", views.CreateEventGet)
 	r.Post("/create_event", views.CreateEventPost)
 
-	r.Get("/e/{public_code}", views.GetDataRange) // e = Event
-	r.Get("/a/{admin_code}", views.GetAdmin)  // a = Admin
+	// e = Event shortcut
+	r.Get("/e/{public_code}", views.EventGetAskTimezone)
+	r.Post("/e/{public_code}", views.EventPostAskTimezone)
+	r.Get("/e/{public_code}/{timezone}", views.EventGetDataRange)
+	r.Post("/e/{public_code}/{timezone}", views.EventPostDataRange)
 
-	/*
-		r.Get("/api/widgets", apiGetWidgets)
-		r.Post("/api/widgets", apiCreateWidget)
-		r.Post("/api/widgets/{slug}", apiUpdateWidget)
-		r.Post("/api/widgets/{slug}/parts", apiCreateWidgetPart)
-		r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/update", apiUpdateWidgetPart)
-		r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/delete", apiDeleteWidgetPart)
-		r.Get("/{slug}", widgetGet)
-		r.Get("/{slug}/admin", widgetAdmin)
-		r.Post("/{slug}/image", widgetImage)
-	*/
+	// a = Admin shortcut
+	r.Get("/a/{admin_code}", views.GetAdmin)
 
 	// Serve statics
 	fs := http.FileServer(http.Dir("static"))
@@ -44,6 +41,16 @@ func init() {
 }
 
 /*
+r.Get("/api/widgets", apiGetWidgets)
+r.Post("/api/widgets", apiCreateWidget)
+r.Post("/api/widgets/{slug}", apiUpdateWidget)
+r.Post("/api/widgets/{slug}/parts", apiCreateWidgetPart)
+r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/update", apiUpdateWidgetPart)
+r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/delete", apiDeleteWidgetPart)
+r.Get("/{slug}", widgetGet)
+r.Get("/{slug}/admin", widgetAdmin)
+r.Post("/{slug}/image", widgetImage)
+
 func apiGetWidgets(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "apiGetWidgets\n")
 }

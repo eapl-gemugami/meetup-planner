@@ -120,7 +120,10 @@ func CreateEventPost(w http.ResponseWriter, r *http.Request) {
 		TimeInterval: time_interval,
 	})
 
-	fmt.Printf("Create event: %v, %v\n", publicCode, adminCode)
+	// TODO: Add a field of num of options 
+
+	//fmt.Printf("Created event: %v, %v\n", publicCode, adminCode)
+
 	// https://pkg.go.dev/net/http#pkg-constants
 	http.Redirect(w, r, "/a/" + adminCode, http.StatusSeeOther)
 }
