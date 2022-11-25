@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 	"errors"
+	"strconv"
 	"net/url"
 	"net/http"
 	"html/template"
@@ -60,48 +61,11 @@ func EventGetDataRange(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timeStart := time.Unix(event.TimeStart, 0)
-	timeEnd := time.Unix(event.TimeEnd, 0)
-
-	// TODO: Check that the difference is less than a week
-	// https://gosamples.dev/difference-between-dates/
-	difference := timeEnd.Sub(timeStart)
-	diff_weeks := int64(difference.Hours() / 24 / 7)
-	if diff_weeks >= 1 {
-		fmt.Fprintf(w, "Data range is too big - Only a week is allowed")
-		return
-	}
-
-	if timeEnd.Before(timeStart) {
-		fmt.Fprintf(w, "End date happens in the past! WTF!")
-		return
-	}
-
-	currentDate := time.UnixMilli(timeStart.UnixMilli())
-	incrementMins := event.TimeInterval
-
-	var timeOptions []string
-
-	currentIdx := 0
-	currentTimeIsBeforetimeEnd := true
-	for currentTimeIsBeforetimeEnd {
-		// https://pkg.go.dev/fmt#hdr-Printing
-		//fmt.Fprintf(w, "%v - %s\n", currentIdx, currentDate.UTC())
-		/*
-		fmt.Fprintf(w, "%v - %s\n",
-			currentIdx,
-			currentDate.In(targetLoc).Format("02/Jan/2006 - Monday @ 15:04 / 3:04pm"),
+	timeOptions :=
+		GetTimeOptions(
+			event.TimeStart, event.TimeEnd,
+			event.TimeInterval, *targetLoc,
 		)
-		*/
-
-		timeOptions = append(timeOptions, currentDate.In(targetLoc).Format("02/Jan/2006 - Monday @ 15:04 / 3:04pm"))
-
-		currentDate = currentDate.Add(time.Minute * time.Duration(incrementMins))
-		currentTimeIsBeforetimeEnd = currentDate.Before(timeEnd)
-		currentIdx += 1
-	}
-
-	timeOptions = append(timeOptions, currentDate.In(targetLoc).Format("02/Jan/2006 - Monday @ 15:04 / 3:04pm"))
 
 	templateData := TemplateData {
 		Event: event,
@@ -130,6 +94,29 @@ func EventGetDataRange(w http.ResponseWriter, r *http.Request) {
 }
 
 func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
+	conn, err := db.GetDBConnection()
+	if err != nil {
+		panic("Failed to connect database")
+	}
+
+	public_code := chi.URLParam(r, "public_code")
+
+	var event models.Event
+	err = conn.First(&event, "public_code = ?", public_code).Error
+
+	timeOptions :=
+		GetTimeOptions(
+			event.TimeStart, event.TimeEnd,
+			event.TimeInterval, *time.UTC,
+		)
+
+	for idx, _ := range timeOptions {
+		currentValue := r.FormValue(strconv.Itoa(idx))
+		fmt.Printf("%v - %v\n", idx, currentValue)
+	}
+
+	// Get the settings of the Event, and get each of the votes
+
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return

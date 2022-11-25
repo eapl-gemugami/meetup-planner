@@ -86,7 +86,7 @@ func CreateEventPost(w http.ResponseWriter, r *http.Request) {
 	start_hour, _ := strconv.Atoi(r.FormValue("start_time"))
 
 	timeStart := time.Date(start_year, time.Month(start_month), start_day, start_hour, 0, 0, 0, loc)
-	fmt.Printf("Start time: %v\n", timeStart)
+	//fmt.Printf("Start time: %v\n", timeStart)
 
 	end_date_split := strings.Split(r.FormValue("end_date"), "-")
 	if len(end_date_split) != 3 {
@@ -99,7 +99,7 @@ func CreateEventPost(w http.ResponseWriter, r *http.Request) {
 	end_hour, _ := strconv.Atoi(r.FormValue("end_time"))
 
 	timeEnd := time.Date(end_year, time.Month(end_month), end_day, end_hour, 0, 0, 0, loc)
-	fmt.Printf("end time: %v\n", timeEnd)
+	//fmt.Printf("End time: %v\n", timeEnd)
 
 	time_interval, _ := strconv.Atoi(r.FormValue("interval"))
 
@@ -120,7 +120,7 @@ func CreateEventPost(w http.ResponseWriter, r *http.Request) {
 		TimeInterval: time_interval,
 	})
 
-	// TODO: Add a field of num of options 
+	// TODO: Add a field of num of options
 
 	//fmt.Printf("Created event: %v, %v\n", publicCode, adminCode)
 

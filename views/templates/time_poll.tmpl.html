@@ -19,16 +19,32 @@
 				</div>
 {{range $index, $element := .TimeOptions}}
 				<div class="form-group">
+					<label>{{$element}}</label><br>
+					<label class="radio-inline">
+						<input type="radio" name="{{$index}}" id="{{$index}}-2" value="2" checked>✓✅ yes
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="{{$index}}" id="{{$index}}-1" value="1" checked>(✓)👌 if need be
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="{{$index}}" id="{{$index}}-0" value="0" checked>✗⛔ please no
+					</label>
+				</div>
+{{end}}
+<!--
+				<div class="form-group">
 					<div class="input-group">
-						<span class="input-group-addon" id="basic-addon1">{{ $element }}</span>
-						<select name="option[{{ $index }}]" id="option[{{ $index }}]" class="form-control">
+						<span class="input-group-addon" id="basic-addon1">{ $element }}</span>
+						<select name="option[{ $index }}]" id="option[{ $index }}]" class="form-control">
 							<option value="0" select>⛔ - Not available</option>
 							<option value="1" select>✅ - Available</option>
 							<option value="2" select>👌 - Prefered</option>
 						</select>
 					</div>
 				</div>
-{{end}}
+-->
 				<input class="btn btn-lg btn-success btn-block" type="submit" value="Create event">
 			</fieldset>
 		</form>
