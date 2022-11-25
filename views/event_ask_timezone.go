@@ -1,11 +1,11 @@
 package views
 
 import (
-	"log"
 	"errors"
-	"net/url"
-	"net/http"
 	"html/template"
+	"log"
+	"net/http"
+	"net/url"
 
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
@@ -56,7 +56,7 @@ func EventPostAskTimezone(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r,
-		r.URL.String() + "/" + url.QueryEscape(r.FormValue("tz")),
+		r.URL.String()+"/"+url.QueryEscape(r.FormValue("tz")),
 		http.StatusSeeOther,
 	)
 }

@@ -16,7 +16,11 @@ func Migrate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Migrate the schema
-	conn.AutoMigrate(&models.Event{})
+	conn.AutoMigrate(
+		&models.Event{},
+		&models.EventUser{},
+		&models.EventVote{},
+	)
 
 	fmt.Fprintf(w, "Sucessfully migrated")
 }

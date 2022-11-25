@@ -6,7 +6,7 @@ import (
 )
 
 func GetTimeOptions(startTimestamp int64, endTimestamp int64,
-		intervalMins int, targetLoc time.Location)	[]string {
+	intervalMins int, targetLoc time.Location) []string {
 	timeStart := time.Unix(startTimestamp, 0)
 	timeEnd := time.Unix(endTimestamp, 0)
 

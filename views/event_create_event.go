@@ -2,19 +2,20 @@ package views
 
 import (
 	"fmt"
+	"html/template"
 	"log"
-	"time"
+	"math/rand"
+	"net/http"
 	"strconv"
 	"strings"
-	"net/http"
-	"math/rand"
-	"html/template"
+	"time"
 
 	"github.com/eapl-gemugami/meetup-planner/db"
 	"github.com/eapl-gemugami/meetup-planner/models"
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
 // From Microsoft Product Activation
 //var letters = []rune("2346789BCDFGHJKMPQRTVWXY")
 
@@ -125,5 +126,5 @@ func CreateEventPost(w http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("Created event: %v, %v\n", publicCode, adminCode)
 
 	// https://pkg.go.dev/net/http#pkg-constants
-	http.Redirect(w, r, "/a/" + adminCode, http.StatusSeeOther)
+	http.Redirect(w, r, "/a/"+adminCode, http.StatusSeeOther)
 }

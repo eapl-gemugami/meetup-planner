@@ -5,22 +5,23 @@ import (
 	"log"
 	"time"
 	"errors"
-	"strconv"
+	"strings"
 	"net/url"
+	"strconv"
 	"net/http"
 	"html/template"
 
-	"gorm.io/gorm"
 	"github.com/go-chi/chi"
+	"gorm.io/gorm"
 
 	"github.com/eapl-gemugami/meetup-planner/db"
 	"github.com/eapl-gemugami/meetup-planner/models"
 )
 
 type TemplateData struct {
-	Event models.Event
-	TimeOptions []string
-	Timezone string
+	Event           models.Event
+	TimeOptions     []string
+	Timezone        string
 	TimezoneEscaped string
 }
 
@@ -67,10 +68,10 @@ func EventGetDataRange(w http.ResponseWriter, r *http.Request) {
 			event.TimeInterval, *targetLoc,
 		)
 
-	templateData := TemplateData {
-		Event: event,
-		TimeOptions: timeOptions,
-		Timezone: timezone,
+	templateData := TemplateData{
+		Event:           event,
+		TimeOptions:     timeOptions,
+		Timezone:        timezone,
 		TimezoneEscaped: chi.URLParam(r, "timezone"),
 	}
 
@@ -110,10 +111,38 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 			event.TimeInterval, *time.UTC,
 		)
 
-	for idx, _ := range timeOptions {
-		currentValue := r.FormValue(strconv.Itoa(idx))
-		fmt.Printf("%v - %v\n", idx, currentValue)
+	var eventUser models.EventUser
+	// https://gorm.io/docs/advanced_query.html#FirstOrCreate
+	conn.FirstOrCreate(&eventUser, models.EventUser{
+		Event: event,
+		Name: strings.TrimSpace(r.FormValue("username")),
+	})
+	fmt.Printf("%v\n\n", &eventUser)
+
+	conn.
+		Delete(&models.EventVote{}, "event_user_id == ?", strconv.FormatUint(uint64(eventUser.ID), 10))
+
+	var votes []models.EventVote
+
+	for optionIdx, _ := range timeOptions {
+		// Atoi = ASCII to Int
+		// Itoa = Int to ASCII
+		currentAvailability, _ := strconv.Atoi(r.FormValue(strconv.Itoa(optionIdx)))
+		//fmt.Printf("%v - %v\n", optionIdx, currentAvailability)
+
+		if currentAvailability != 0 {
+			votes = append(votes, models.EventVote{
+				//EventUserID: int(eventUser.ID),
+				EventUser: eventUser,
+				TimeOption: optionIdx,
+				TimeAvailability: currentAvailability,
+			})
+		}
 	}
+
+	fmt.Printf("%+v\n", &votes)
+
+	conn.Create(&votes)
 
 	// Get the settings of the Event, and get each of the votes
 

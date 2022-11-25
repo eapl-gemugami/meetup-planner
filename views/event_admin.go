@@ -1,14 +1,14 @@
 package views
 
 import (
-	"fmt"
-	"log"
 	"errors"
-	"net/http"
+	"fmt"
 	"html/template"
+	"log"
+	"net/http"
 
-	"gorm.io/gorm"
 	"github.com/go-chi/chi"
+	"gorm.io/gorm"
 
 	"github.com/eapl-gemugami/meetup-planner/db"
 	"github.com/eapl-gemugami/meetup-planner/models"
