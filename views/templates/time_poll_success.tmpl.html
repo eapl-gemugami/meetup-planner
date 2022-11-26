@@ -1,0 +1,12 @@
+{{define "title"}}{{.Event.Name}}{{end}}
+
+{{define "main"}}
+<div class="login-panel panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Event: {{.Event.Name}}</h3>
+	</div>
+	<div class="panel-body">
+		<p>Thank you for voting <strong>{{.EventUser.Name}}</strong>!</p>
+	</div>
+</div>
+{{end}}

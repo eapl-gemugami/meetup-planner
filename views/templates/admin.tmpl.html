@@ -1,17 +1,25 @@
-{{define "title"}}Admin panel for event "{{.Name}}"{{end}}
+{{define "title"}}Admin panel for event "{{.Event.Name}}"{{end}}
 
 {{define "main"}}
 <div class="login-panel panel panel-default">
 	<div class="panel-heading">
-		<h3 class="panel-title"><strong>Event</strong> {{.Name}}</h3>
+		<h3 class="panel-title"><strong>Event</strong> {{.Event.Name}}</h3>
 	</div>
 	<div class="panel-body">
 		<p>Admin URL<br>
-			<a href='{{template "base_url" .}}/a/{{.AdminCode}}'>{{template "base_url" .}}/a/{{.AdminCode}}</a>
+			<a href='{{template "base_url" .}}/a/{{.Event.AdminCode}}'>{{template "base_url" .}}/a/{{.Event.AdminCode}}</a>
 		</p>
 		<p>Public URL<br>
-			<a href='{{template "base_url" .}}/e/{{.PublicCode}}'>{{template "base_url" .}}/e/{{.PublicCode}}</a>
+			<a href='{{template "base_url" .}}/e/{{.Event.PublicCode}}'>{{template "base_url" .}}/e/{{.Event.PublicCode}}</a>
 		</p>
+		<hr>
+		<h2>Users who have voted</h2>
+		{{range $index, $user := .Users}}
+		<p>{{$user.Name}}</p>
+		{{end}}
+		{{ $usersLength := len .Users }} {{ if eq $usersLength 0 }}
+		<p>No one has voted yet! 😐</p>
+		{{end}}
 	</div>
 </div>
 {{end}}

@@ -1,0 +1,27 @@
+{{define "title"}}Admin panel for event "{{.Event.Name}}"{{end}}
+
+{{define "main"}}
+<div class="login-panel panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title"><strong>Event</strong> {{.Event.Name}}</h3>
+	</div>
+	<div class="panel-body">
+		<table class=table>
+			<thead>
+				<tr>
+					<th>Option</th>
+					<th># Votes</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $index, $element := .OptionSum}}
+				<tr>
+					<td>{{$element.Text}}</td>
+					<td>{{$element.Sum}}</td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+	</div>
+</div>
+{{end}}

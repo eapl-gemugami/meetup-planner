@@ -30,6 +30,10 @@ func init() {
 	r.Get("/e/{public_code}/{timezone}", views.EventGetDataRange)
 	r.Post("/e/{public_code}/{timezone}", views.EventPostDataRange)
 
+	// r = Results (of voting)
+	//r.Get("/r/{public_code}", views.EventGetResultsAskTimezone)
+	r.Get("/r/{public_code}/{timezone}", views.EventGetResults)
+
 	// a = Admin shortcut
 	r.Get("/a/{admin_code}", views.GetAdmin)
 

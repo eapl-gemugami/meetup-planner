@@ -25,6 +25,11 @@ type TemplateData struct {
 	TimezoneEscaped string
 }
 
+type SuccessData struct {
+	Event           models.Event
+	EventUser       models.EventUser
+}
+
 // TimeIn returns the time in UTC if the name is "" or "UTC".
 // It returns the local time if the name is "Local".
 // Otherwise, the name is taken to be a location name in
@@ -113,14 +118,18 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 
 	var eventUser models.EventUser
 	// https://gorm.io/docs/advanced_query.html#FirstOrCreate
+	//fmt.Printf("EventUser - Event ID is $v", event.ID)
+
 	conn.FirstOrCreate(&eventUser, models.EventUser{
-		Event: event,
+		EventID: int(event.ID),
 		Name: strings.TrimSpace(r.FormValue("username")),
 	})
-	fmt.Printf("%v\n\n", &eventUser)
+	//fmt.Printf("%v\n\n", &eventUser)
 
-	conn.
-		Delete(&models.EventVote{}, "event_user_id == ?", strconv.FormatUint(uint64(eventUser.ID), 10))
+	conn.Delete(&models.EventVote{},
+		"event_user_id == ?",
+		strconv.FormatUint(uint64(eventUser.ID), 10,
+	))
 
 	var votes []models.EventVote
 
@@ -132,7 +141,8 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 
 		if currentAvailability != 0 {
 			votes = append(votes, models.EventVote{
-				//EventUserID: int(eventUser.ID),
+				//EventID: int(event.ID),
+				Event: event,
 				EventUser: eventUser,
 				TimeOption: optionIdx,
 				TimeAvailability: currentAvailability,
@@ -140,7 +150,7 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	fmt.Printf("%+v\n", &votes)
+	//fmt.Printf("%+v\n", &votes)
 
 	conn.Create(&votes)
 
@@ -153,7 +163,32 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Fprintf(w, "r.PostFrom = %v\n", r.PostForm)
 
+	/*
 	for key, value := range r.PostForm {
 		fmt.Fprintf(w, "%v - %v\n", key, value)
+	}
+	*/
+
+	successData := SuccessData{
+		Event:         event,
+		EventUser:     eventUser,
+	}
+
+	tmpl_files := []string{
+		"templates/base.tmpl.html",
+		"templates/time_poll_success.tmpl.html",
+	}
+
+	ts, err := template.ParseFS(content, tmpl_files...)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error parsing Templates", 500)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", &successData)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error parsing Templates", 500)
 	}
 }

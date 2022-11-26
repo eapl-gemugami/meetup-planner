@@ -10,14 +10,14 @@
 		<form role="form" action="/e/{{.Event.PublicCode}}/{{.TimezoneEscaped}}" method="post">
 			<fieldset>
 				<div class="form-group">
-					<input class="form-control" placeholder="Your name" name="username" id="username" type="text" autofocus>
+					<input class="form-control" placeholder="Your name" name="username" id="username" type="text" autofocus required>
 				</div>
 				<hr>
 				<div class="form-group">
 					<h2 class="panel-title"><strong>Select your prefered times for this event</strong></h2>
 					<h3 class="panel-title">Times in timezone: {{.Timezone}}</h3>
 				</div>
-{{range $index, $element := .TimeOptions}}
+				{{range $index, $element := .TimeOptions}}
 				<div class="form-group">
 					<label>{{$element}}</label><br>
 					<label class="radio-inline">
@@ -32,7 +32,7 @@
 						<input type="radio" name="{{$index}}" id="{{$index}}-0" value="0" checked>✗⛔ please no
 					</label>
 				</div>
-{{end}}
+				{{end}}
 <!--
 				<div class="form-group">
 					<div class="input-group">
