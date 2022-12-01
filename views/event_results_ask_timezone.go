@@ -15,7 +15,7 @@ import (
 	"github.com/eapl-gemugami/meetup-planner/models"
 )
 
-func EventGetAskTimezone(w http.ResponseWriter, r *http.Request) {
+func EventGetResultsAskTimezone(w http.ResponseWriter, r *http.Request) {
 	conn, err := db.GetDBConnection()
 	if err != nil {
 		panic("Failed to connect database")
@@ -34,7 +34,7 @@ func EventGetAskTimezone(w http.ResponseWriter, r *http.Request) {
 
 	tmpl_files := []string{
 		"templates/base.tmpl.html",
-		"templates/event_ask_timezone.tmpl.html",
+		"templates/results_ask_timezone.tmpl.html",
 	}
 
 	ts, err := template.ParseFS(content, tmpl_files...)
@@ -51,7 +51,7 @@ func EventGetAskTimezone(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func EventPostAskTimezone(w http.ResponseWriter, r *http.Request) {
+func EventPostResultsAskTimezone(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		http.Redirect(w, r, "/", http.StatusBadRequest)
 	}

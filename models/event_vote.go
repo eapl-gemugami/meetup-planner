@@ -2,11 +2,11 @@ package models
 
 type EventVote struct {
 	EventID int
-	Event Event
+	Event   Event
 
 	EventUserID int
-	EventUser EventUser
+	EventUser   EventUser
 
-	TimeOption int
+	TimeOption       int
 	TimeAvailability int
 }

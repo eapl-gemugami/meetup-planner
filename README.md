@@ -9,4 +9,6 @@ https://github.com/cosmtrek/air
 go fmt ./...
 ```
 
+## Important links
+https://www.digitalocean.com/community/tutorials/how-to-deploy-a-go-web-application-using-nginx-on-ubuntu-18-04
 https://lets-go.alexedwards.net/sample/02.07-html-templating-and-inheritance.html

@@ -1,30 +1,30 @@
 package views
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"time"
-	"errors"
 
-	"net/url"
-	"net/http"
 	"html/template"
+	"net/http"
+	"net/url"
 
-	"gorm.io/gorm"
 	"github.com/go-chi/chi"
+	"gorm.io/gorm"
 
 	"github.com/eapl-gemugami/meetup-planner/db"
 	"github.com/eapl-gemugami/meetup-planner/models"
 )
 
 type ResultsData struct {
-	Event models.Event
+	Event     models.Event
 	OptionSum []OptionSum
 }
 
 type OptionSum struct {
 	Text string
-	Sum int
+	Sum  int
 }
 
 func EventGetResults(w http.ResponseWriter, r *http.Request) {
@@ -83,14 +83,14 @@ func EventGetResults(w http.ResponseWriter, r *http.Request) {
 
 		optionsSum = append(optionsSum, OptionSum{
 			Text: optionText,
-			Sum: sum,
+			Sum:  sum,
 		})
 	}
 
 	fmt.Println(optionsSum)
 
 	resultsData := ResultsData{
-		Event: event,
+		Event:     event,
 		OptionSum: optionsSum,
 	}
 

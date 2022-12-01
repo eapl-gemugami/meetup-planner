@@ -30,8 +30,9 @@ func init() {
 	r.Get("/e/{public_code}/{timezone}", views.EventGetDataRange)
 	r.Post("/e/{public_code}/{timezone}", views.EventPostDataRange)
 
-	// r = Results (of voting)
-	//r.Get("/r/{public_code}", views.EventGetResultsAskTimezone)
+	// r = Results (of survey)
+	r.Get("/r/{public_code}", views.EventGetResultsAskTimezone)
+	r.Post("/r/{public_code}", views.EventPostResultsAskTimezone)
 	r.Get("/r/{public_code}/{timezone}", views.EventGetResults)
 
 	// a = Admin shortcut
@@ -43,60 +44,3 @@ func init() {
 
 	Serve = r
 }
-
-/*
-r.Get("/api/widgets", apiGetWidgets)
-r.Post("/api/widgets", apiCreateWidget)
-r.Post("/api/widgets/{slug}", apiUpdateWidget)
-r.Post("/api/widgets/{slug}/parts", apiCreateWidgetPart)
-r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/update", apiUpdateWidgetPart)
-r.Post("/api/widgets/{slug}/parts/{id:[0-9]+}/delete", apiDeleteWidgetPart)
-r.Get("/{slug}", widgetGet)
-r.Get("/{slug}/admin", widgetAdmin)
-r.Post("/{slug}/image", widgetImage)
-
-func apiGetWidgets(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "apiGetWidgets\n")
-}
-
-func apiCreateWidget(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "apiCreateWidget\n")
-}
-
-func apiUpdateWidget(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
-	fmt.Fprintf(w, "apiUpdateWidget %s\n", slug)
-}
-
-func apiCreateWidgetPart(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
-	fmt.Fprintf(w, "apiCreateWidgetPart %s\n", slug)
-}
-
-func apiUpdateWidgetPart(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	fmt.Fprintf(w, "apiUpdateWidgetPart %s %d\n", slug, id)
-}
-
-func apiDeleteWidgetPart(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	fmt.Fprintf(w, "apiDeleteWidgetPart %s %d\n", slug, id)
-}
-
-func widgetGet(w http.ResponseWriter, r *http.Request) {
-		slug := chi.URLParam(r, "slug")
-		fmt.Fprintf(w, "widget %s\n", slug)
-}
-
-func widgetAdmin(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
-	fmt.Fprintf(w, "widgetAdmin %s\n", slug)
-}
-
-func widgetImage(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
-	fmt.Fprintf(w, "widgetImage %s\n", slug)
-}
-*/

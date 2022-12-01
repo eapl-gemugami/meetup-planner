@@ -1,15 +1,15 @@
 package views
 
 import (
-	"fmt"
-	"log"
-	"time"
 	"errors"
-	"strings"
+	"fmt"
+	"html/template"
+	"log"
+	"net/http"
 	"net/url"
 	"strconv"
-	"net/http"
-	"html/template"
+	"strings"
+	"time"
 
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"
@@ -26,8 +26,8 @@ type TemplateData struct {
 }
 
 type SuccessData struct {
-	Event           models.Event
-	EventUser       models.EventUser
+	Event     models.Event
+	EventUser models.EventUser
 }
 
 // TimeIn returns the time in UTC if the name is "" or "UTC".
@@ -122,14 +122,13 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 
 	conn.FirstOrCreate(&eventUser, models.EventUser{
 		EventID: int(event.ID),
-		Name: strings.TrimSpace(r.FormValue("username")),
+		Name:    strings.TrimSpace(r.FormValue("username")),
 	})
 	//fmt.Printf("%v\n\n", &eventUser)
 
 	conn.Delete(&models.EventVote{},
 		"event_user_id == ?",
-		strconv.FormatUint(uint64(eventUser.ID), 10,
-	))
+		strconv.FormatUint(uint64(eventUser.ID), 10))
 
 	var votes []models.EventVote
 
@@ -142,9 +141,9 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 		if currentAvailability != 0 {
 			votes = append(votes, models.EventVote{
 				//EventID: int(event.ID),
-				Event: event,
-				EventUser: eventUser,
-				TimeOption: optionIdx,
+				Event:            event,
+				EventUser:        eventUser,
+				TimeOption:       optionIdx,
 				TimeAvailability: currentAvailability,
 			})
 		}
@@ -164,14 +163,14 @@ func EventPostDataRange(w http.ResponseWriter, r *http.Request) {
 	//fmt.Fprintf(w, "r.PostFrom = %v\n", r.PostForm)
 
 	/*
-	for key, value := range r.PostForm {
-		fmt.Fprintf(w, "%v - %v\n", key, value)
-	}
+		for key, value := range r.PostForm {
+			fmt.Fprintf(w, "%v - %v\n", key, value)
+		}
 	*/
 
 	successData := SuccessData{
-		Event:         event,
-		EventUser:     eventUser,
+		Event:     event,
+		EventUser: eventUser,
 	}
 
 	tmpl_files := []string{

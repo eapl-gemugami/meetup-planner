@@ -1,11 +1,11 @@
 package views
 
 import (
-	"fmt"
-	"log"
 	"errors"
-	"net/http"
+	"fmt"
 	"html/template"
+	"log"
+	"net/http"
 
 	"github.com/go-chi/chi"
 	"gorm.io/gorm"

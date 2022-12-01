@@ -8,7 +8,7 @@ type EventUser struct {
 	gorm.Model
 
 	EventID int
-	Event Event
+	Event   Event
 
 	Name string `gorm:"unique"`
 }

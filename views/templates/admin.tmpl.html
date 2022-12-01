@@ -3,17 +3,20 @@
 {{define "main"}}
 <div class="login-panel panel panel-default">
 	<div class="panel-heading">
-		<h3 class="panel-title"><strong>Event</strong> {{.Event.Name}}</h3>
+		<p class="panel-title">Event: {{.Event.Name}}</p>
 	</div>
 	<div class="panel-body">
-		<p>Admin URL<br>
-			<a href='{{template "base_url" .}}/a/{{.Event.AdminCode}}'>{{template "base_url" .}}/a/{{.Event.AdminCode}}</a>
+		<h3>Important links</h3>
+		<p>Admin URL - Save this URL, allows to get stats<br>
+			<a href='{{template "base_url" .}}/a/{{.Event.AdminCode}}'>{{template "base_url" .}}/a/{{.Event.AdminCode}}</a> <button class="js-copy-admin btn">Copy</button>
 		</p>
-		<p>Public URL<br>
-			<a href='{{template "base_url" .}}/e/{{.Event.PublicCode}}'>{{template "base_url" .}}/e/{{.Event.PublicCode}}</a>
+		<p>Public URL - Share this link to your team<br>
+			<a href='{{template "base_url" .}}/e/{{.Event.PublicCode}}'>{{template "base_url" .}}/e/{{.Event.PublicCode}}</a> <button class="js-copy-public btn">Copy</button>
 		</p>
-		<hr>
-		<h2>Users who have voted</h2>
+		<p>Survey results<br>
+			<a href='{{template "base_url" .}}/r/{{.Event.PublicCode}}'>{{template "base_url" .}}/r/{{.Event.PublicCode}}</a> <button class="js-copy-results btn">Copy</button>
+		</p>
+		<h3>Users who have voted</h3>
 		{{range $index, $user := .Users}}
 		<p>{{$user.Name}}</p>
 		{{end}}
@@ -22,4 +25,29 @@
 		{{end}}
 	</div>
 </div>
+<script>
+function copyTextToClipboard(text) {
+  if (!navigator.clipboard) {
+    fallbackCopyTextToClipboard(text);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(function() {
+    console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    console.error('Async: Could not copy text: ', err);
+  });
+}
+
+let btnCopyAdmin = document.querySelector('.js-copy-admin')
+let btnCopyPublic = document.querySelector('.js-copy-public')
+let btnCopyResults = document.querySelector('.js-copy-results')
+
+btnCopyAdmin.addEventListener('click', function(event) {
+  copyTextToClipboard('{{template "base_url" .}}/a/{{.Event.AdminCode}}');
+})
+
+btnCopyPublic.addEventListener('click', function(event) {
+  copyTextToClipboard('{{template "base_url" .}}/e/{{.Event.PublicCode}}');
+})
+</script>
 {{end}}
